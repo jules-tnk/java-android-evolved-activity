@@ -25,10 +25,15 @@ public class MainActivity extends AppCompatActivity {
     private EditText phoneNumberEditText;
     private EditText urlEditText;
 
+    private EditText challengerNumber1EditText;
+    private EditText challengerNumber2EditText;
+
     private int CALL_Perm = 1;
-    private String defaultUrl = "https://www.emi.ac.ma/";
+    private final String DEFAULT_URL = "https://www.emi.ac.ma/";
     private boolean isUserLoggedIn=false;
-    private static final int REQUEST_CODE = 1;
+    private boolean isChallengePassed=false;
+    private static final int LOGIN_REQUEST_CODE = 1;
+    private static final int CHECK_REQUEST_CODE = 2;
 
     private String phoneNumberToCall;
 
@@ -46,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
         urlEditText = (EditText) findViewById(R.id.urlEditText);
 
         openPersoActivityButton = (ImageButton) findViewById(R.id.openPersoActivityButton);
+
+        challengerNumber1EditText = (EditText) findViewById(R.id.challengeNumber1EditText);
+        challengerNumber2EditText = (EditText) findViewById(R.id.challengeNumber2EditText);
 
 
         launchPhoneCallButton.setOnClickListener(
@@ -65,12 +73,10 @@ public class MainActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        String url = urlEditText.getText().toString();
-                        if (url.equals("")){
-                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(defaultUrl)));
+                        if (!isChallengePassed()){
+                            openCheckActivity();
                         } else {
-                            String completeUrl = "https://"+url;
-                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(completeUrl)));
+                            openWebPage();
                         }
                     }
                 }
@@ -87,9 +93,36 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
+    private void openWebPage(){
+        String url = urlEditText.getText().toString();
+        if (url.equals("")){
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(DEFAULT_URL)));
+        } else {
+            String completeUrl = "https://"+url;
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(completeUrl)));
+        }
+    }
+
+    private void openCheckActivity(){
+        Intent checkActivityIntent = new Intent(getApplicationContext(), CheckActivity.class);
+        String challengeNumber1Str = challengerNumber1EditText.getText().toString();
+        String challengeNumber2Str = challengerNumber2EditText.getText().toString();
+
+        if (challengeNumber1Str.equals("") || challengeNumber2Str.equals("")){
+            Toast.makeText(this, "Donnez les deux nombres du challenge", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            int challengeNumber1 = Integer.parseInt(challengeNumber1Str);
+            int challengeNumber2 = Integer.parseInt(challengeNumber2Str);
+            checkActivityIntent.putExtra("challengeNumber1", challengeNumber1);
+            checkActivityIntent.putExtra("challengeNumber2", challengeNumber2);
+            startActivityForResult(checkActivityIntent, CHECK_REQUEST_CODE);
+        }
+    }
+
     private void openLoginActivity() {
         Intent loginActivityIntent = new Intent(getApplicationContext(), LoginActivity.class);
-        startActivityForResult(loginActivityIntent, REQUEST_CODE);
+        startActivityForResult(loginActivityIntent, LOGIN_REQUEST_CODE);
     }
 
     private void launchPhoneCall() {
@@ -114,9 +147,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK){
+        if (requestCode == LOGIN_REQUEST_CODE && resultCode == Activity.RESULT_OK){
             boolean isUserLoggedIn = data.getExtras().getBoolean("isLoggedIn");
             setUserLoggedIn(isUserLoggedIn);
+        }
+
+        if (requestCode == CHECK_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+            boolean isChallengePassed = data.getExtras().getBoolean("isChallengePassed");
+            setChallengePassed(isChallengePassed);
         }
     }
 
@@ -141,6 +179,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void setUserLoggedIn(boolean userLoggedIn) {
         isUserLoggedIn = userLoggedIn;
+    }
+
+    public boolean isChallengePassed() {
+        return isChallengePassed;
+    }
+
+    public void setChallengePassed(boolean challengePassed) {
+        isChallengePassed = challengePassed;
     }
 
     public String getPhoneNumberToCall() {
