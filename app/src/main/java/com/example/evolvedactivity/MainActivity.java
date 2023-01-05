@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         if (!isUserLoggedIn()){
-                            openLoginActivity();
+                            openExplicitLoginActivity();
                         } else {
                             launchPhoneCall();
                         }
@@ -86,8 +86,7 @@ public class MainActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent persoActivityIntent = new Intent(getApplicationContext(), PersoActivity.class);
-                        startActivity(persoActivityIntent);
+                        openImplicitLoginActivity();
                     }
                 }
         );
@@ -120,7 +119,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void openLoginActivity() {
+    private void openPersoActivity(){
+        Intent persoActivityIntent = new Intent(getApplicationContext(), PersoActivity.class);
+        startActivity(persoActivityIntent);
+    }
+
+    private void openImplicitLoginActivity() {
+        Intent loginActivityIntent = new Intent("login.ACTION");
+        startActivity(loginActivityIntent);
+    }
+
+    private void openExplicitLoginActivity() {
         Intent loginActivityIntent = new Intent(getApplicationContext(), LoginActivity.class);
         startActivityForResult(loginActivityIntent, LOGIN_REQUEST_CODE);
     }
