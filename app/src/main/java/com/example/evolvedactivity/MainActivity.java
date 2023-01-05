@@ -14,6 +14,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText challengerNumber1EditText;
     private EditText challengerNumber2EditText;
+    private Button openContactInteractionButton;
 
     private int CALL_Perm = 1;
     private final String DEFAULT_URL = "https://www.emi.ac.ma/";
@@ -54,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
 
         challengerNumber1EditText = (EditText) findViewById(R.id.challengeNumber1EditText);
         challengerNumber2EditText = (EditText) findViewById(R.id.challengeNumber2EditText);
+
+        openContactInteractionButton = (Button) findViewById(R.id.openContactInteractionButton);
 
 
         launchPhoneCallButton.setOnClickListener(
@@ -90,6 +94,20 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
+
+        openContactInteractionButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        openContactInteractionActivity();
+                    }
+                }
+        );
+    }
+
+    public void openContactInteractionActivity(){
+        Intent contactInteractionActivityIntent = new Intent(getApplicationContext(), ContactInteractionActivity.class);
+        startActivity(contactInteractionActivityIntent);
     }
 
     private void openWebPage(){

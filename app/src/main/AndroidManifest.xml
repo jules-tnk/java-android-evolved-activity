@@ -15,9 +15,15 @@
         android:theme="@style/Theme.EvolvedActivity"
         tools:targetApi="31">
         <activity
+            android:name=".ContactInteractionActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".OtherLoginActivity"
             android:exported="false">
-
             <intent-filter>
                 <action android:name="login.ACTION" />
 
@@ -40,6 +46,7 @@
             android:exported="false">
             <intent-filter>
                 <action android:name="login.ACTION" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
